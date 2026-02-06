@@ -1,4 +1,4 @@
-// ======= APP.JS v3 — Astro4 DUO (enriched) =======
+// ======= APP.JS v4 — with birth time =======
 
 let lastResult = null;
 
@@ -9,6 +9,8 @@ function calculateCompatibility() {
   const date2 = document.getElementById('date2').value;
   const fullname1 = document.getElementById('fullname1').value.trim() || null;
   const fullname2 = document.getElementById('fullname2').value.trim() || null;
+  const time1 = document.getElementById('time1').value || null;
+  const time2 = document.getElementById('time2').value || null;
 
   if (!name1 || !name2 || !date1 || !date2) {
     alert('Por favor completa nombre y fecha de nacimiento');
@@ -20,7 +22,7 @@ function calculateCompatibility() {
   btn.disabled = true;
 
   setTimeout(() => {
-    const result = calculateFullCompatibility(date1, date2, fullname1, fullname2);
+    const result = calculateFullCompatibility(date1, date2, fullname1, fullname2, time1, time2);
     lastResult = { ...result, name1, name2 };
     showResult(result, name1, name2);
     btn.textContent = '✨ Revelar compatibilidad';
@@ -48,7 +50,6 @@ function showResult(result, name1, name2) {
   animateNumber('score-number', 0, pct, 1200);
   document.getElementById('score-label').textContent = result.label;
 
-  // Breakdown
   const traditions = ['western', 'vedic', 'chinese', 'numerology'];
   traditions.forEach((t, i) => {
     const data = result[t];
@@ -59,26 +60,32 @@ function showResult(result, name1, name2) {
     }, 300 + i * 200);
   });
 
-  // Vedic extra (deity info)
+  // Vedic extra
   const extraVedic = document.getElementById('extra-vedic');
   if (result.vedic.deityInfo) {
     extraVedic.textContent = result.vedic.deityInfo;
     extraVedic.style.display = 'block';
-  } else {
-    extraVedic.style.display = 'none';
-  }
+  } else { extraVedic.style.display = 'none'; }
+
+  // Vedic precision badge
+  const precBadge = document.getElementById('precision-vedic');
+  if (result.vedic.precision) {
+    const icons = { 'alta': '🟢 Alta precisión', 'buena': '🟢 Buena precisión', 'media': '🟡 Precisión media', 'aproximada': '🟡 Aproximado (sin hora)' };
+    precBadge.textContent = icons[result.vedic.precision] || '';
+    precBadge.style.display = 'block';
+  } else { precBadge.style.display = 'none'; }
 
   // Insight
   document.getElementById('insight-card').style.display = 'block';
   let insightText = result.insight;
-  if (result.hasNames && result.numerology.breakdown) {
+  if (result.hasNames && result.numerology.breakdown && result.numerology.breakdown.soul !== undefined) {
     const b = result.numerology.breakdown;
-    if (b.soul !== undefined) {
-      insightText += ` Numerología avanzada: Camino ${b.life}%, Alma ${b.soul}%, Destino ${b.destiny}%.`;
-    }
+    insightText += ` Numerología avanzada: Camino ${b.life}%, Alma ${b.soul}%, Destino ${b.destiny}%.`;
+  }
+  if (result.hasTimes) {
+    insightText += ` Nakshatra calculado con hora de nacimiento para mayor precisión.`;
   }
   document.getElementById('insight-text').textContent = insightText;
-
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -113,21 +120,20 @@ async function shareResult() {
     `☀️ Occidental: ${r.western.score}%\n🪷 Védico: ${r.vedic.score}%\n` +
     `🐉 Chino: ${r.chinese.score}%\n🔢 Numerología: ${r.numerology.score}%\n\n` +
     `Descubre tu compatibilidad: ${window.location.origin}`;
-
   if (navigator.share) {
-    try { await navigator.share({ title: 'Astro4 DUO', text }); } catch(e) { fallbackCopy(text); }
+    try { await navigator.share({ title:'Astro4 DUO', text }); } catch(e) { fallbackCopy(text); }
   } else { fallbackCopy(text); }
 }
 
 function fallbackCopy(text) {
   navigator.clipboard.writeText(text).then(() => {
     const btn = document.querySelector('.action-buttons .btn-primary');
-    const orig = btn.textContent;
+    const o = btn.textContent;
     btn.textContent = '✅ Copiado al portapapeles';
-    setTimeout(() => btn.textContent = orig, 2000);
+    setTimeout(() => btn.textContent = o, 2000);
   }).catch(() => {
     const ta = document.createElement('textarea');
-    ta.value = text; document.body.appendChild(ta); ta.select();
+    ta.value=text; document.body.appendChild(ta); ta.select();
     document.execCommand('copy'); document.body.removeChild(ta);
     const btn = document.querySelector('.action-buttons .btn-primary');
     btn.textContent = '✅ Copiado';
