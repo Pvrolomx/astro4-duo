@@ -1,4 +1,4 @@
-// ======= APP.JS v2 — Astro4 DUO =======
+// ======= APP.JS v3 — Astro4 DUO (enriched) =======
 
 let lastResult = null;
 
@@ -7,19 +7,20 @@ function calculateCompatibility() {
   const name2 = document.getElementById('name2').value.trim();
   const date1 = document.getElementById('date1').value;
   const date2 = document.getElementById('date2').value;
+  const fullname1 = document.getElementById('fullname1').value.trim() || null;
+  const fullname2 = document.getElementById('fullname2').value.trim() || null;
 
   if (!name1 || !name2 || !date1 || !date2) {
-    alert('Por favor completa todos los campos');
+    alert('Por favor completa nombre y fecha de nacimiento');
     return;
   }
 
-  // Micro-delay for anticipation
   const btn = document.getElementById('btn-reveal');
   btn.textContent = '✨ Calculando...';
   btn.disabled = true;
 
   setTimeout(() => {
-    const result = calculateFullCompatibility(date1, date2);
+    const result = calculateFullCompatibility(date1, date2, fullname1, fullname2);
     lastResult = { ...result, name1, name2 };
     showResult(result, name1, name2);
     btn.textContent = '✨ Revelar compatibilidad';
@@ -32,7 +33,6 @@ function showResult(result, name1, name2) {
   document.getElementById('screen-result').style.display = 'block';
   document.getElementById('result-names').textContent = `${name1} 💕 ${name2}`;
 
-  // Score circle animation
   const pct = result.total;
   const ring = document.getElementById('score-ring-fill');
   const circumference = 2 * Math.PI * 85;
@@ -45,30 +45,39 @@ function showResult(result, name1, name2) {
   
   ring.style.stroke = color;
   setTimeout(() => { ring.style.strokeDashoffset = offset; }, 100);
-
   animateNumber('score-number', 0, pct, 1200);
   document.getElementById('score-label').textContent = result.label;
 
-  // Breakdown bars
+  // Breakdown
   const traditions = ['western', 'vedic', 'chinese', 'numerology'];
   traditions.forEach((t, i) => {
     const data = result[t];
     document.getElementById(`pct-${t}`).textContent = `${data.score}%`;
-    document.getElementById(`detail-${t}`).textContent = `${data.signs} — ${data.detail}`;
+    document.getElementById(`detail-${t}`).textContent = `${data.signs} — ${data.detail || ''}`;
     setTimeout(() => {
       document.getElementById(`fill-${t}`).style.width = `${data.score}%`;
     }, 300 + i * 200);
   });
 
-  // Vedic disclaimer
-  if (result.vedicNote) {
-    const vedicDetail = document.getElementById('detail-vedic');
-    vedicDetail.textContent += ` ${result.vedicNote}`;
+  // Vedic extra (deity info)
+  const extraVedic = document.getElementById('extra-vedic');
+  if (result.vedic.deityInfo) {
+    extraVedic.textContent = result.vedic.deityInfo;
+    extraVedic.style.display = 'block';
+  } else {
+    extraVedic.style.display = 'none';
   }
 
   // Insight
   document.getElementById('insight-card').style.display = 'block';
-  document.getElementById('insight-text').textContent = result.insight;
+  let insightText = result.insight;
+  if (result.hasNames && result.numerology.breakdown) {
+    const b = result.numerology.breakdown;
+    if (b.soul !== undefined) {
+      insightText += ` Numerología avanzada: Camino ${b.life}%, Alma ${b.soul}%, Destino ${b.destiny}%.`;
+    }
+  }
+  document.getElementById('insight-text').textContent = insightText;
 
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -98,25 +107,16 @@ function resetForm() {
 
 async function shareResult() {
   if (!lastResult) return;
-  
+  const r = lastResult;
   const text = `✨ Astro4 DUO — Compatibilidad Cósmica\n\n` +
-    `${lastResult.name1} 💕 ${lastResult.name2}\n` +
-    `Score: ${lastResult.total}% — ${lastResult.label}\n\n` +
-    `☀️ Occidental: ${lastResult.western.score}%\n` +
-    `🪷 Védico: ${lastResult.vedic.score}%\n` +
-    `🐉 Chino: ${lastResult.chinese.score}%\n` +
-    `🔢 Numerología: ${lastResult.numerology.score}%\n\n` +
+    `${r.name1} 💕 ${r.name2}\nScore: ${r.total}% — ${r.label}\n\n` +
+    `☀️ Occidental: ${r.western.score}%\n🪷 Védico: ${r.vedic.score}%\n` +
+    `🐉 Chino: ${r.chinese.score}%\n🔢 Numerología: ${r.numerology.score}%\n\n` +
     `Descubre tu compatibilidad: ${window.location.origin}`;
 
   if (navigator.share) {
-    try {
-      await navigator.share({ title: 'Astro4 DUO — Compatibilidad Cósmica', text });
-    } catch (e) {
-      fallbackCopy(text);
-    }
-  } else {
-    fallbackCopy(text);
-  }
+    try { await navigator.share({ title: 'Astro4 DUO', text }); } catch(e) { fallbackCopy(text); }
+  } else { fallbackCopy(text); }
 }
 
 function fallbackCopy(text) {
@@ -126,13 +126,9 @@ function fallbackCopy(text) {
     btn.textContent = '✅ Copiado al portapapeles';
     setTimeout(() => btn.textContent = orig, 2000);
   }).catch(() => {
-    // Final fallback
     const ta = document.createElement('textarea');
-    ta.value = text;
-    document.body.appendChild(ta);
-    ta.select();
-    document.execCommand('copy');
-    document.body.removeChild(ta);
+    ta.value = text; document.body.appendChild(ta); ta.select();
+    document.execCommand('copy'); document.body.removeChild(ta);
     const btn = document.querySelector('.action-buttons .btn-primary');
     btn.textContent = '✅ Copiado';
     setTimeout(() => btn.textContent = '📤 Compartir resultado', 2000);
