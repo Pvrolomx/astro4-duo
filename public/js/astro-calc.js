@@ -128,7 +128,7 @@ function calculateMoonLong(origDt, birthTime) {
     try {
       const astroDate = Astronomy.MakeTime(dt);
       const moonEcl = Astronomy.EclipticGeoMoon(astroDate);
-      const tropicalLong = moonEcl.elon;
+      const tropicalLong = moonEcl.lon;
       const year = dt.getFullYear();
       const ayanamsa = 23.85 + (year - 2000) * 0.0139;
       const precision = birthTime ? 'alta' : 'buena';
