@@ -375,3 +375,45 @@ footer a { color: var(--accent); text-decoration: none; }
   margin-top: 4px;
   display: none;
 }
+
+/* Logo */
+.logo-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.logo-icon { flex-shrink: 0; }
+
+header h1 .duo-accent {
+  -webkit-text-fill-color: var(--accent-gold);
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+/* Language Toggle */
+.lang-toggle {
+  display: flex;
+  justify-content: flex-end;
+  padding: 8px 0 0;
+}
+
+.lang-toggle button {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  color: var(--text-primary);
+  padding: 6px 14px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: background 0.3s, border-color 0.3s;
+}
+
+.lang-toggle button:hover {
+  background: rgba(157,78,221,0.15);
+  border-color: var(--accent);
+}
