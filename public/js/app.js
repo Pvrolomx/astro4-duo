@@ -1,4 +1,4 @@
-// ======= APP.JS v4 — with birth time =======
+// ======= APP.JS v4.1 — with error handling =======
 
 let lastResult = null;
 
@@ -22,9 +22,14 @@ function calculateCompatibility() {
   btn.disabled = true;
 
   setTimeout(() => {
-    const result = calculateFullCompatibility(date1, date2, fullname1, fullname2, time1, time2);
-    lastResult = { ...result, name1, name2 };
-    showResult(result, name1, name2);
+    try {
+      const result = calculateFullCompatibility(date1, date2, fullname1, fullname2, time1, time2);
+      lastResult = { ...result, name1, name2 };
+      showResult(result, name1, name2);
+    } catch(err) {
+      console.error('Error calculating:', err);
+      alert('Error al calcular. Intenta de nuevo.');
+    }
     btn.textContent = '✨ Revelar compatibilidad';
     btn.disabled = false;
   }, 400);
@@ -62,15 +67,15 @@ function showResult(result, name1, name2) {
 
   // Vedic extra
   const extraVedic = document.getElementById('extra-vedic');
-  if (result.vedic.deityInfo) {
+  if (result.vedic && result.vedic.deityInfo) {
     extraVedic.textContent = result.vedic.deityInfo;
     extraVedic.style.display = 'block';
   } else { extraVedic.style.display = 'none'; }
 
   // Vedic precision badge
   const precBadge = document.getElementById('precision-vedic');
-  if (result.vedic.precision) {
-    const icons = { 'alta': '🟢 Alta precisión', 'buena': '🟢 Buena precisión', 'media': '🟡 Precisión media', 'aproximada': '🟡 Aproximado (sin hora)' };
+  if (result.vedic && result.vedic.precision) {
+    const icons = { 'alta':'🟢 Alta precisión', 'buena':'🟢 Buena precisión', 'media':'🟡 Precisión media', 'aproximada':'🟡 Aproximado (sin hora)' };
     precBadge.textContent = icons[result.vedic.precision] || '';
     precBadge.style.display = 'block';
   } else { precBadge.style.display = 'none'; }
@@ -78,7 +83,7 @@ function showResult(result, name1, name2) {
   // Insight
   document.getElementById('insight-card').style.display = 'block';
   let insightText = result.insight;
-  if (result.hasNames && result.numerology.breakdown && result.numerology.breakdown.soul !== undefined) {
+  if (result.hasNames && result.numerology && result.numerology.breakdown && result.numerology.breakdown.soul !== undefined) {
     const b = result.numerology.breakdown;
     insightText += ` Numerología avanzada: Camino ${b.life}%, Alma ${b.soul}%, Destino ${b.destiny}%.`;
   }
@@ -115,13 +120,9 @@ function resetForm() {
 async function shareResult() {
   if (!lastResult) return;
   const r = lastResult;
-  const text = `✨ Astro4 DUO — Compatibilidad Cósmica\n\n` +
-    `${r.name1} 💕 ${r.name2}\nScore: ${r.total}% — ${r.label}\n\n` +
-    `☀️ Occidental: ${r.western.score}%\n🪷 Védico: ${r.vedic.score}%\n` +
-    `🐉 Chino: ${r.chinese.score}%\n🔢 Numerología: ${r.numerology.score}%\n\n` +
-    `Descubre tu compatibilidad: ${window.location.origin}`;
+  const text = `✨ Astro4 DUO — Compatibilidad Cósmica\n\n${r.name1} 💕 ${r.name2}\nScore: ${r.total}% — ${r.label}\n\n☀️ Occidental: ${r.western.score}%\n🪷 Védico: ${r.vedic.score}%\n🐉 Chino: ${r.chinese.score}%\n🔢 Numerología: ${r.numerology.score}%\n\nDescubre tu compatibilidad: ${window.location.origin}`;
   if (navigator.share) {
-    try { await navigator.share({ title:'Astro4 DUO', text }); } catch(e) { fallbackCopy(text); }
+    try { await navigator.share({title:'Astro4 DUO',text}); } catch(e) { fallbackCopy(text); }
   } else { fallbackCopy(text); }
 }
 
