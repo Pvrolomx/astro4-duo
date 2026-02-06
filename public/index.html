@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Astro4 DUO — Compatibilidad Cósmica</title>
+  <meta name="description" content="Descubre tu compatibilidad cósmica usando 4 tradiciones: occidental, védica, china y numerología">
+  <meta property="og:title" content="Astro4 DUO — Compatibilidad Cósmica">
+  <meta property="og:description" content="¿Qué tan compatibles son? Descúbrelo con 4 tradiciones astrológicas">
+  <meta property="og:image" content="/og-image.png">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#0a0a1a">
+  <link rel="icon" href="/favicon.ico">
+  <link rel="apple-touch-icon" href="/icons/icon-192.png">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div class="container">
+    <!-- LANDING / INPUT -->
+    <div id="screen-input">
+      <header>
+        <h1>✨ Astro4 DUO</h1>
+        <p class="tagline">Compatibilidad Cósmica — 4 tradiciones</p>
+      </header>
+
+      <div class="card">
+        <h2>¿Qué tan compatibles son?</h2>
+        <div class="duo-columns">
+          <div class="person-col">
+            <h3>👤 Persona 1</h3>
+            <div class="form-group">
+              <label for="name1">Nombre</label>
+              <input type="text" id="name1" placeholder="Ej: María" autocomplete="off">
+            </div>
+            <div class="form-group">
+              <label for="date1">Fecha de nacimiento</label>
+              <input type="date" id="date1">
+            </div>
+          </div>
+          <div class="divider-v">💕</div>
+          <div class="person-col">
+            <h3>👤 Persona 2</h3>
+            <div class="form-group">
+              <label for="name2">Nombre</label>
+              <input type="text" id="name2" placeholder="Ej: Carlos" autocomplete="off">
+            </div>
+            <div class="form-group">
+              <label for="date2">Fecha de nacimiento</label>
+              <input type="date" id="date2">
+            </div>
+          </div>
+        </div>
+        <button id="btn-reveal" class="btn-primary" onclick="calculateCompatibility()">
+          ✨ Revelar compatibilidad
+        </button>
+      </div>
+
+      <div class="footer-links">
+        <a href="https://astro4.duendes.app/" target="_blank">🔮 Ver mi perfil Astro4 completo</a>
+      </div>
+    </div>
+
+    <!-- RESULTADO -->
+    <div id="screen-result" style="display:none">
+      <header>
+        <h1>✨ Astro4 DUO</h1>
+        <p class="tagline" id="result-names"></p>
+      </header>
+
+      <div class="card score-card">
+        <div class="score-circle-wrapper">
+          <svg class="score-ring" viewBox="0 0 200 200">
+            <circle class="score-ring-bg" cx="100" cy="100" r="85" />
+            <circle class="score-ring-fill" id="score-ring-fill" cx="100" cy="100" r="85" />
+          </svg>
+          <div class="score-number" id="score-number">0%</div>
+        </div>
+        <p class="score-label" id="score-label"></p>
+      </div>
+
+      <div class="card breakdown-card">
+        <h2>Desglose por tradición</h2>
+        <div class="tradition-bar" id="bar-western">
+          <div class="tradition-header">
+            <span class="tradition-icon">☀️</span>
+            <span class="tradition-name">Occidental</span>
+            <span class="tradition-pct" id="pct-western">0%</span>
+          </div>
+          <div class="bar-track"><div class="bar-fill" id="fill-western"></div></div>
+          <p class="tradition-detail" id="detail-western"></p>
+        </div>
+        <div class="tradition-bar" id="bar-vedic">
+          <div class="tradition-header">
+            <span class="tradition-icon">🪷</span>
+            <span class="tradition-name">Védico</span>
+            <span class="tradition-pct" id="pct-vedic">0%</span>
+          </div>
+          <div class="bar-track"><div class="bar-fill" id="fill-vedic"></div></div>
+          <p class="tradition-detail" id="detail-vedic"></p>
+        </div>
+        <div class="tradition-bar" id="bar-chinese">
+          <div class="tradition-header">
+            <span class="tradition-icon">🐉</span>
+            <span class="tradition-name">Chino</span>
+            <span class="tradition-pct" id="pct-chinese">0%</span>
+          </div>
+          <div class="bar-track"><div class="bar-fill" id="fill-chinese"></div></div>
+          <p class="tradition-detail" id="detail-chinese"></p>
+        </div>
+        <div class="tradition-bar" id="bar-numerology">
+          <div class="tradition-header">
+            <span class="tradition-icon">🔢</span>
+            <span class="tradition-name">Numerología</span>
+            <span class="tradition-pct" id="pct-numerology">0%</span>
+          </div>
+          <div class="bar-track"><div class="bar-fill" id="fill-numerology"></div></div>
+          <p class="tradition-detail" id="detail-numerology"></p>
+        </div>
+      </div>
+
+      <div class="card insight-card" id="insight-card" style="display:none">
+        <h2>💫 Insight</h2>
+        <p id="insight-text"></p>
+      </div>
+
+      <div class="action-buttons">
+        <button class="btn-primary" onclick="shareResult()">📤 Compartir resultado</button>
+        <button class="btn-secondary" onclick="resetForm()">🔄 Probar otra pareja</button>
+        <a href="https://astro4.duendes.app/" target="_blank" class="btn-outline">🔮 Ver perfil completo en Astro4</a>
+      </div>
+    </div>
+
+    <footer>
+      <p>Hecho por <a href="https://duendes.app" target="_blank">duendes.app</a> 2026</p>
+      <button id="btn-install" style="display:none" onclick="installApp()">📲 Instalar App</button>
+    </footer>
+  </div>
+
+  <script src="/js/astro-calc.js"></script>
+  <script src="/js/compatibility-calc.js"></script>
+  <script src="/js/app.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js');
+    }
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      document.getElementById('btn-install').style.display = 'inline-block';
+    });
+    function installApp() {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt = null;
+      }
+    }
+  </script>
+</body>
+</html>
