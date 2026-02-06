@@ -1,4 +1,4 @@
-// ======= APP.JS v4.1 — with error handling =======
+// ======= APP.JS v5.0 — with i18n + error handling =======
 
 let lastResult = null;
 
@@ -13,12 +13,12 @@ function calculateCompatibility() {
   const time2 = document.getElementById('time2').value || null;
 
   if (!name1 || !name2 || !date1 || !date2) {
-    alert('Por favor completa nombre y fecha de nacimiento');
+    alert(t('alertFill'));
     return;
   }
 
   const btn = document.getElementById('btn-reveal');
-  btn.textContent = '✨ Calculando...';
+  btn.querySelector('[data-i18n]').textContent = t('calculating');
   btn.disabled = true;
 
   setTimeout(() => {
@@ -28,9 +28,9 @@ function calculateCompatibility() {
       showResult(result, name1, name2);
     } catch(err) {
       console.error('Error calculating:', err);
-      alert('Error al calcular. Intenta de nuevo.');
+      alert(t('alertError'));
     }
-    btn.textContent = '✨ Revelar compatibilidad';
+    btn.querySelector('[data-i18n]').textContent = t('reveal');
     btn.disabled = false;
   }, 400);
 }
@@ -56,12 +56,12 @@ function showResult(result, name1, name2) {
   document.getElementById('score-label').textContent = result.label;
 
   const traditions = ['western', 'vedic', 'chinese', 'numerology'];
-  traditions.forEach((t, i) => {
-    const data = result[t];
-    document.getElementById(`pct-${t}`).textContent = `${data.score}%`;
-    document.getElementById(`detail-${t}`).textContent = `${data.signs} — ${data.detail || ''}`;
+  traditions.forEach((trad, i) => {
+    const data = result[trad];
+    document.getElementById(`pct-${trad}`).textContent = `${data.score}%`;
+    document.getElementById(`detail-${trad}`).textContent = `${data.signs} — ${data.detail || ''}`;
     setTimeout(() => {
-      document.getElementById(`fill-${t}`).style.width = `${data.score}%`;
+      document.getElementById(`fill-${trad}`).style.width = `${data.score}%`;
     }, 300 + i * 200);
   });
 
@@ -111,8 +111,8 @@ function resetForm() {
   document.getElementById('screen-result').style.display = 'none';
   document.getElementById('screen-input').style.display = 'block';
   document.getElementById('score-ring-fill').style.strokeDashoffset = '534';
-  ['western','vedic','chinese','numerology'].forEach(t => {
-    document.getElementById(`fill-${t}`).style.width = '0%';
+  ['western','vedic','chinese','numerology'].forEach(trad => {
+    document.getElementById(`fill-${trad}`).style.width = '0%';
   });
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -120,9 +120,9 @@ function resetForm() {
 async function shareResult() {
   if (!lastResult) return;
   const r = lastResult;
-  const text = `✨ Astro4 DUO — Compatibilidad Cósmica\n\n${r.name1} 💕 ${r.name2}\nScore: ${r.total}% — ${r.label}\n\n☀️ Occidental: ${r.western.score}%\n🪷 Védico: ${r.vedic.score}%\n🐉 Chino: ${r.chinese.score}%\n🔢 Numerología: ${r.numerology.score}%\n\nDescubre tu compatibilidad: ${window.location.origin}`;
+  const text = `✨ A4 DUO — ${t('tagline')}\n\n${r.name1} 💕 ${r.name2}\nScore: ${r.total}% — ${r.label}\n\n☀️ ${t('western')}: ${r.western.score}%\n🪷 ${t('vedic')}: ${r.vedic.score}%\n🐉 ${t('chinese')}: ${r.chinese.score}%\n🔢 ${t('numerology')}: ${r.numerology.score}%\n\n${window.location.origin}`;
   if (navigator.share) {
-    try { await navigator.share({title:'Astro4 DUO',text}); } catch(e) { fallbackCopy(text); }
+    try { await navigator.share({title:'A4 DUO',text}); } catch(e) { fallbackCopy(text); }
   } else { fallbackCopy(text); }
 }
 
@@ -130,14 +130,14 @@ function fallbackCopy(text) {
   navigator.clipboard.writeText(text).then(() => {
     const btn = document.querySelector('.action-buttons .btn-primary');
     const o = btn.textContent;
-    btn.textContent = '✅ Copiado al portapapeles';
-    setTimeout(() => btn.textContent = o, 2000);
+    btn.textContent = t('copied');
+    setTimeout(() => btn.querySelector('[data-i18n]').textContent = t('share'), 2000);
   }).catch(() => {
     const ta = document.createElement('textarea');
     ta.value=text; document.body.appendChild(ta); ta.select();
     document.execCommand('copy'); document.body.removeChild(ta);
     const btn = document.querySelector('.action-buttons .btn-primary');
-    btn.textContent = '✅ Copiado';
-    setTimeout(() => btn.textContent = '📤 Compartir resultado', 2000);
+    btn.textContent = t('copied');
+    setTimeout(() => btn.querySelector('[data-i18n]').textContent = t('share'), 2000);
   });
 }
