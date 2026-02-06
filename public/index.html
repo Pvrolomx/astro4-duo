@@ -13,6 +13,7 @@
   <link rel="icon" href="/favicon.ico">
   <link rel="apple-touch-icon" href="/icons/icon-192.png">
   <link rel="stylesheet" href="/styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/astronomy-engine@2.1.19/astronomy.browser.min.js" defer></script>
 </head>
 <body>
   <div class="container">
@@ -33,6 +34,10 @@
               <input type="text" id="name1" placeholder="Ej: María" autocomplete="off">
             </div>
             <div class="form-group">
+              <label for="fullname1">Nombre completo <span class="optional">(opcional)</span></label>
+              <input type="text" id="fullname1" placeholder="Ej: María López García" autocomplete="off">
+            </div>
+            <div class="form-group">
               <label for="date1">Fecha de nacimiento</label>
               <input type="date" id="date1">
             </div>
@@ -45,11 +50,16 @@
               <input type="text" id="name2" placeholder="Ej: Carlos" autocomplete="off">
             </div>
             <div class="form-group">
+              <label for="fullname2">Nombre completo <span class="optional">(opcional)</span></label>
+              <input type="text" id="fullname2" placeholder="Ej: Carlos Ruiz Pérez" autocomplete="off">
+            </div>
+            <div class="form-group">
               <label for="date2">Fecha de nacimiento</label>
               <input type="date" id="date2">
             </div>
           </div>
         </div>
+        <p class="hint">💡 El nombre completo activa numerología avanzada (Alma + Destino)</p>
         <button id="btn-reveal" class="btn-primary" onclick="calculateCompatibility()">
           ✨ Revelar compatibilidad
         </button>
@@ -97,6 +107,7 @@
           </div>
           <div class="bar-track"><div class="bar-fill" id="fill-vedic"></div></div>
           <p class="tradition-detail" id="detail-vedic"></p>
+          <p class="tradition-extra" id="extra-vedic"></p>
         </div>
         <div class="tradition-bar" id="bar-chinese">
           <div class="tradition-header">
@@ -140,21 +151,13 @@
   <script src="/js/compatibility-calc.js"></script>
   <script src="/js/app.js"></script>
   <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js');
-    }
+    if ('serviceWorker' in navigator) { navigator.serviceWorker.register('/sw.js'); }
     let deferredPrompt;
     window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault();
-      deferredPrompt = e;
+      e.preventDefault(); deferredPrompt = e;
       document.getElementById('btn-install').style.display = 'inline-block';
     });
-    function installApp() {
-      if (deferredPrompt) {
-        deferredPrompt.prompt();
-        deferredPrompt = null;
-      }
-    }
+    function installApp() { if (deferredPrompt) { deferredPrompt.prompt(); deferredPrompt=null; } }
   </script>
 </body>
 </html>
