@@ -115,7 +115,8 @@ const nakshatraGroups = [
 ];
 
 // birthTime: "HH:MM" string or null
-function calculateMoonLong(dt, birthTime) {
+function calculateMoonLong(origDt, birthTime) {
+  const dt = new Date(origDt.getTime());
   // Apply birth time if available
   if (birthTime) {
     const [h, m] = birthTime.split(':').map(Number);
