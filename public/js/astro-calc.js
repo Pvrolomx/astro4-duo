@@ -1,37 +1,32 @@
-// ======= ASTRO-CALC.JS (reusado de Astro4) =======
+// ======= ASTRO-CALC.JS v2 — Astro4 DUO (enriched) =======
 
-// Zodiaco Occidental
+// === OCCIDENTAL ===
 const westernSigns = [
-  { name: "Capricornio", element: "Tierra", modality: "Cardinal", start: [12, 22], end: [1, 19] },
-  { name: "Acuario", element: "Aire", modality: "Fijo", start: [1, 20], end: [2, 18] },
-  { name: "Piscis", element: "Agua", modality: "Mutable", start: [2, 19], end: [3, 20] },
-  { name: "Aries", element: "Fuego", modality: "Cardinal", start: [3, 21], end: [4, 19] },
-  { name: "Tauro", element: "Tierra", modality: "Fijo", start: [4, 20], end: [5, 20] },
-  { name: "Géminis", element: "Aire", modality: "Mutable", start: [5, 21], end: [6, 20] },
-  { name: "Cáncer", element: "Agua", modality: "Cardinal", start: [6, 21], end: [7, 22] },
-  { name: "Leo", element: "Fuego", modality: "Fijo", start: [7, 23], end: [8, 22] },
-  { name: "Virgo", element: "Tierra", modality: "Mutable", start: [8, 23], end: [9, 22] },
-  { name: "Libra", element: "Aire", modality: "Cardinal", start: [9, 23], end: [10, 22] },
-  { name: "Escorpio", element: "Agua", modality: "Fijo", start: [10, 23], end: [11, 21] },
-  { name: "Sagitario", element: "Fuego", modality: "Mutable", start: [11, 22], end: [12, 21] }
+  { name:"Capricornio", element:"Tierra", modality:"Cardinal", start:[12,22], end:[1,19] },
+  { name:"Acuario", element:"Aire", modality:"Fijo", start:[1,20], end:[2,18] },
+  { name:"Piscis", element:"Agua", modality:"Mutable", start:[2,19], end:[3,20] },
+  { name:"Aries", element:"Fuego", modality:"Cardinal", start:[3,21], end:[4,19] },
+  { name:"Tauro", element:"Tierra", modality:"Fijo", start:[4,20], end:[5,20] },
+  { name:"Géminis", element:"Aire", modality:"Mutable", start:[5,21], end:[6,20] },
+  { name:"Cáncer", element:"Agua", modality:"Cardinal", start:[6,21], end:[7,22] },
+  { name:"Leo", element:"Fuego", modality:"Fijo", start:[7,23], end:[8,22] },
+  { name:"Virgo", element:"Tierra", modality:"Mutable", start:[8,23], end:[9,22] },
+  { name:"Libra", element:"Aire", modality:"Cardinal", start:[9,23], end:[10,22] },
+  { name:"Escorpio", element:"Agua", modality:"Fijo", start:[10,23], end:[11,21] },
+  { name:"Sagitario", element:"Fuego", modality:"Mutable", start:[11,22], end:[12,21] }
 ];
 
 function getWesternSign(birthDate) {
-  const day = birthDate.getDate();
-  const month = birthDate.getMonth() + 1;
+  const day = birthDate.getDate(), month = birthDate.getMonth()+1;
   for (const sign of westernSigns) {
-    const [sm, sd] = sign.start;
-    const [em, ed] = sign.end;
-    if (sm === 12 && em === 1) {
-      if ((month === 12 && day >= sd) || (month === 1 && day <= ed)) return sign;
-    } else {
-      if ((month === sm && day >= sd) || (month === em && day <= ed)) return sign;
-    }
+    const [sm,sd]=sign.start, [em,ed]=sign.end;
+    if (sm===12&&em===1) { if ((month===12&&day>=sd)||(month===1&&day<=ed)) return sign; }
+    else { if ((month===sm&&day>=sd)||(month===em&&day<=ed)) return sign; }
   }
   return westernSigns[0];
 }
 
-// Año Nuevo Chino
+// === CHINO (con Yin/Yang) ===
 const CHINESE_NEW_YEAR = {
   1920:'1920-02-20',1921:'1921-02-08',1922:'1922-01-28',1923:'1923-02-16',
   1924:'1924-02-05',1925:'1925-01-24',1926:'1926-02-13',1927:'1927-02-02',
@@ -66,7 +61,7 @@ const CHINESE_NEW_YEAR = {
 function getChineseYear(birthDate) {
   const year = birthDate.getFullYear();
   if (!CHINESE_NEW_YEAR[year]) return year;
-  return birthDate < new Date(CHINESE_NEW_YEAR[year]) ? year - 1 : year;
+  return birthDate < new Date(CHINESE_NEW_YEAR[year]) ? year-1 : year;
 }
 
 const chineseAnimals = ["Rata","Buey","Tigre","Conejo","Dragón","Serpiente","Caballo","Cabra","Mono","Gallo","Perro","Cerdo"];
@@ -74,21 +69,43 @@ const chineseElements = ["Madera","Fuego","Tierra","Metal","Agua"];
 
 function getChineseZodiac(birthDate) {
   const cy = getChineseYear(birthDate);
-  const idx = (cy - 4) % 12;
-  const elemIdx = Math.floor(((cy - 4) % 10) / 2);
-  return { animal: chineseAnimals[idx], element: chineseElements[elemIdx], year: cy };
+  const idx = (cy-4)%12;
+  const elemIdx = Math.floor(((cy-4)%10)/2);
+  const yinYang = cy%2===0 ? "Yang" : "Yin";
+  return { animal: chineseAnimals[idx], element: chineseElements[elemIdx], yinYang, year: cy };
 }
 
-// Nakshatra simplificado (grupos Deva/Manushya/Rakshasa)
-const nakshatraNames = [
-  "Ashwini","Bharani","Krittika","Rohini","Mrigashira","Ardra",
-  "Punarvasu","Pushya","Ashlesha","Magha","Purva Phalguni","Uttara Phalguni",
-  "Hasta","Chitra","Swati","Vishakha","Anuradha","Jyeshtha",
-  "Mula","Purva Ashadha","Uttara Ashadha","Shravana","Dhanishta",
-  "Shatabhisha","Purva Bhadrapada","Uttara Bhadrapada","Revati"
+// === VÉDICO (con deity, quality, pada, astronomy-engine) ===
+const NAKSHATRAS = [
+  { name:"Ashwini", deity:"Ashwini Kumaras", quality:"veloz, sanador" },
+  { name:"Bharani", deity:"Yama", quality:"restricción, transformación" },
+  { name:"Krittika", deity:"Agni", quality:"agudo, purificador" },
+  { name:"Rohini", deity:"Brahma", quality:"crecimiento, creatividad" },
+  { name:"Mrigashira", deity:"Soma", quality:"buscador, curioso" },
+  { name:"Ardra", deity:"Rudra", quality:"tormenta, transformación" },
+  { name:"Punarvasu", deity:"Aditi", quality:"renovación, retorno" },
+  { name:"Pushya", deity:"Brihaspati", quality:"nutritivo, próspero" },
+  { name:"Ashlesha", deity:"Nagas", quality:"místico, intenso" },
+  { name:"Magha", deity:"Pitris", quality:"real, ancestral" },
+  { name:"Purva Phalguni", deity:"Bhaga", quality:"placer, creatividad" },
+  { name:"Uttara Phalguni", deity:"Aryaman", quality:"amistad, contratos" },
+  { name:"Hasta", deity:"Savitar", quality:"habilidad, artesanía" },
+  { name:"Chitra", deity:"Tvashtar", quality:"brillante, artístico" },
+  { name:"Swati", deity:"Vayu", quality:"independiente, flexible" },
+  { name:"Vishakha", deity:"Indra-Agni", quality:"determinado, enfocado" },
+  { name:"Anuradha", deity:"Mitra", quality:"devoción, amistad" },
+  { name:"Jyeshtha", deity:"Indra", quality:"protector, mayor" },
+  { name:"Mula", deity:"Nirriti", quality:"fundacional, investigador" },
+  { name:"Purva Ashadha", deity:"Apas", quality:"invencible, purificador" },
+  { name:"Uttara Ashadha", deity:"Vishvadevas", quality:"universal, victorioso" },
+  { name:"Shravana", deity:"Vishnu", quality:"aprendizaje, escucha" },
+  { name:"Dhanishta", deity:"Vasus", quality:"riqueza, musical" },
+  { name:"Shatabhisha", deity:"Varuna", quality:"sanador, secreto" },
+  { name:"Purva Bhadrapada", deity:"Aja Ekapada", quality:"fogoso, transformativo" },
+  { name:"Uttara Bhadrapada", deity:"Ahir Budhnya", quality:"profundo, espiritual" },
+  { name:"Revati", deity:"Pushan", quality:"nutritivo, viajero" }
 ];
 
-// Grupos: Deva (divino), Manushya (humano), Rakshasa (demonio)
 const nakshatraGroups = [
   "Deva","Manushya","Rakshasa","Deva","Deva","Manushya",
   "Deva","Deva","Rakshasa","Rakshasa","Manushya","Manushya",
@@ -97,30 +114,96 @@ const nakshatraGroups = [
   "Rakshasa","Manushya","Manushya","Deva"
 ];
 
-function getNakshatraSimple(birthDate) {
-  // Aproximación basada en posición lunar estimada
-  const d = new Date(birthDate);
-  const jd = d.getTime() / 86400000 + 2440587.5;
-  // Longitud lunar simplificada
-  const T = (jd - 2451545.0) / 36525;
-  const L = (218.3164477 + 481267.88123421 * T) % 360;
-  const moonLong = (L + 360) % 360;
-  // Ayanamsa Lahiri aprox
-  const ayanamsa = 23.85 + (d.getFullYear() - 2000) * 0.0139;
-  const sidereal = (moonLong - ayanamsa + 360) % 360;
-  const idx = Math.floor(sidereal / (360/27)) % 27;
-  return { name: nakshatraNames[idx], group: nakshatraGroups[idx], index: idx };
+function calculateMoonLong(dt) {
+  // Try astronomy-engine first
+  if (typeof Astronomy !== 'undefined') {
+    try {
+      const astroDate = Astronomy.MakeTime(dt);
+      const moonEcl = Astronomy.EclipticGeoMoon(astroDate);
+      const tropicalLong = moonEcl.elon;
+      const year = dt.getFullYear();
+      const ayanamsa = 23.85 + (year - 2000) * 0.0139;
+      return { long: (tropicalLong - ayanamsa + 360) % 360, precision: 'alta' };
+    } catch(e) { /* fallback */ }
+  }
+  // Fallback
+  const SIDEREAL_MONTH = 27.321661;
+  const MOON_DAILY = 360 / SIDEREAL_MONTH;
+  const REF_DATE = new Date(Date.UTC(2000, 0, 21, 4, 40, 0));
+  const REF_MOON_LONG = 121;
+  const daysDiff = (dt.getTime() - REF_DATE.getTime()) / 86400000;
+  let moonLong = (REF_MOON_LONG + daysDiff * MOON_DAILY) % 360;
+  if (moonLong < 0) moonLong += 360;
+  return { long: moonLong, precision: 'aproximada' };
 }
 
-// Numerología: Life Path Number
+function getNakshatraFull(birthDate) {
+  const dt = new Date(birthDate);
+  const { long: moonLong, precision } = calculateMoonLong(dt);
+  const SPAN = 360/27;
+  const idx = Math.floor(moonLong / SPAN) % 27;
+  const pada = Math.floor((moonLong % SPAN) / (SPAN / 4)) + 1;
+  const nak = NAKSHATRAS[idx];
+  return {
+    name: nak.name,
+    deity: nak.deity,
+    quality: nak.quality,
+    group: nakshatraGroups[idx],
+    pada,
+    index: idx,
+    precision
+  };
+}
+
+// Backward compat alias
+function getNakshatraSimple(birthDate) {
+  return getNakshatraFull(birthDate);
+}
+
+// === NUMEROLOGÍA (con Soul y Destiny) ===
+const numKeywords = {
+  1:'Liderazgo',2:'Cooperación',3:'Expresión',4:'Estabilidad',5:'Libertad',
+  6:'Responsabilidad',7:'Sabiduría',8:'Poder',9:'Humanitarismo',
+  11:'Maestro Espiritual',22:'Maestro Constructor',33:'Maestro Sanador'
+};
+
+function reduceToSingle(n) {
+  while (n > 9 && n !== 11 && n !== 22 && n !== 33) {
+    let s = 0;
+    for (const ch of String(n)) s += parseInt(ch);
+    n = s;
+  }
+  return n;
+}
+
 function getLifePath(birthDate) {
-  const str = birthDate.toISOString().split('T')[0].replace(/-/g, '');
+  const str = birthDate.toISOString().split('T')[0].replace(/-/g,'');
   let sum = 0;
   for (const ch of str) sum += parseInt(ch);
-  while (sum > 9 && sum !== 11 && sum !== 22 && sum !== 33) {
-    let s = 0;
-    for (const ch of String(sum)) s += parseInt(ch);
-    sum = s;
-  }
-  return sum;
+  return reduceToSingle(sum);
 }
+
+const letterValues = {
+  a:1,b:2,c:3,d:4,e:5,f:6,g:7,h:8,i:9,
+  j:1,k:2,l:3,m:4,n:5,o:6,p:7,q:8,r:9,
+  s:1,t:2,u:3,v:4,w:5,x:6,y:7,z:8
+};
+const vowels = ['a','e','i','o','u'];
+
+function getSoulNumber(fullName) {
+  if (!fullName) return null;
+  const name = fullName.toLowerCase().replace(/[^a-záéíóúñü]/g,'');
+  let sum = 0;
+  for (const ch of name) { if (vowels.includes(ch)) sum += letterValues[ch]||0; }
+  return reduceToSingle(sum);
+}
+
+function getDestinyNumber(fullName) {
+  if (!fullName) return null;
+  const name = fullName.toLowerCase().replace(/[^a-záéíóúñü]/g,'');
+  let sum = 0;
+  for (const ch of name) { sum += letterValues[ch]||0; }
+  return reduceToSingle(sum);
+}
+
+function getKeyword(n) { return numKeywords[n] || ''; }
