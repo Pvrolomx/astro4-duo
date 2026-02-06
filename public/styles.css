@@ -308,3 +308,9 @@ footer a { color: var(--accent); text-decoration: none; }
   font-style: italic;
   display: none;
 }
+
+.precision-badge {
+  font-size: 0.75rem;
+  margin-top: 4px;
+  display: none;
+}
