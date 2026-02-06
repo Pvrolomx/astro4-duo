@@ -344,12 +344,11 @@ footer a { color: var(--accent); text-decoration: none; }
 
 /* Header Logo */
 .header-logo {
-  width: 120px;
+  width: 160px;
   height: auto;
   margin: 0 auto 8px;
   display: block;
-  border-radius: 16px;
-  filter: drop-shadow(0 0 20px rgba(157,78,221,0.3)) drop-shadow(0 0 20px rgba(255,215,0,0.2));
+  filter: drop-shadow(0 0 15px rgba(157,78,221,0.4)) drop-shadow(0 0 15px rgba(255,215,0,0.3));
 }
 
 /* Responsive */
