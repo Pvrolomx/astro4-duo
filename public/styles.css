@@ -376,22 +376,6 @@ footer a { color: var(--accent); text-decoration: none; }
   display: none;
 }
 
-/* Logo */
-.logo-wrapper {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-}
-
-.logo-icon { flex-shrink: 0; }
-
-header h1 .duo-accent {
-  -webkit-text-fill-color: var(--accent-gold);
-  font-weight: 800;
-  letter-spacing: 2px;
-}
-
 /* Language Toggle */
 .lang-toggle {
   display: flex;
