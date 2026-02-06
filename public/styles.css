@@ -286,3 +286,25 @@ footer a { color: var(--accent); text-decoration: none; }
   .divider-v { justify-content: center; padding: 4px 0; }
   header h1 { font-size: 1.8rem; }
 }
+
+.optional {
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  font-weight: normal;
+}
+
+.hint {
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  text-align: center;
+  margin: 8px 0;
+  opacity: 0.8;
+}
+
+.tradition-extra {
+  font-size: 0.75rem;
+  color: var(--accent);
+  margin-top: 4px;
+  font-style: italic;
+  display: none;
+}
