@@ -1,4 +1,4 @@
-// ======= ASTRO-CALC.JS v2 — Astro4 DUO (enriched) =======
+// ======= ASTRO-CALC.JS v3 — with birth time support =======
 
 // === OCCIDENTAL ===
 const westernSigns = [
@@ -26,7 +26,7 @@ function getWesternSign(birthDate) {
   return westernSigns[0];
 }
 
-// === CHINO (con Yin/Yang) ===
+// === CHINO ===
 const CHINESE_NEW_YEAR = {
   1920:'1920-02-20',1921:'1921-02-08',1922:'1922-01-28',1923:'1923-02-16',
   1924:'1924-02-05',1925:'1925-01-24',1926:'1926-02-13',1927:'1927-02-02',
@@ -75,7 +75,7 @@ function getChineseZodiac(birthDate) {
   return { animal: chineseAnimals[idx], element: chineseElements[elemIdx], yinYang, year: cy };
 }
 
-// === VÉDICO (con deity, quality, pada, astronomy-engine) ===
+// === VÉDICO (with birth time support) ===
 const NAKSHATRAS = [
   { name:"Ashwini", deity:"Ashwini Kumaras", quality:"veloz, sanador" },
   { name:"Bharani", deity:"Yama", quality:"restricción, transformación" },
@@ -114,7 +114,14 @@ const nakshatraGroups = [
   "Rakshasa","Manushya","Manushya","Deva"
 ];
 
-function calculateMoonLong(dt) {
+// birthTime: "HH:MM" string or null
+function calculateMoonLong(dt, birthTime) {
+  // Apply birth time if available
+  if (birthTime) {
+    const [h, m] = birthTime.split(':').map(Number);
+    dt.setHours(h, m, 0, 0);
+  }
+
   // Try astronomy-engine first
   if (typeof Astronomy !== 'undefined') {
     try {
@@ -123,7 +130,8 @@ function calculateMoonLong(dt) {
       const tropicalLong = moonEcl.elon;
       const year = dt.getFullYear();
       const ayanamsa = 23.85 + (year - 2000) * 0.0139;
-      return { long: (tropicalLong - ayanamsa + 360) % 360, precision: 'alta' };
+      const precision = birthTime ? 'alta' : 'buena';
+      return { long: (tropicalLong - ayanamsa + 360) % 360, precision };
     } catch(e) { /* fallback */ }
   }
   // Fallback
@@ -134,33 +142,26 @@ function calculateMoonLong(dt) {
   const daysDiff = (dt.getTime() - REF_DATE.getTime()) / 86400000;
   let moonLong = (REF_MOON_LONG + daysDiff * MOON_DAILY) % 360;
   if (moonLong < 0) moonLong += 360;
-  return { long: moonLong, precision: 'aproximada' };
+  const precision = birthTime ? 'media' : 'aproximada';
+  return { long: moonLong, precision };
 }
 
-function getNakshatraFull(birthDate) {
+function getNakshatraFull(birthDate, birthTime) {
   const dt = new Date(birthDate);
-  const { long: moonLong, precision } = calculateMoonLong(dt);
+  const { long: moonLong, precision } = calculateMoonLong(dt, birthTime);
   const SPAN = 360/27;
   const idx = Math.floor(moonLong / SPAN) % 27;
   const pada = Math.floor((moonLong % SPAN) / (SPAN / 4)) + 1;
   const nak = NAKSHATRAS[idx];
   return {
-    name: nak.name,
-    deity: nak.deity,
-    quality: nak.quality,
-    group: nakshatraGroups[idx],
-    pada,
-    index: idx,
-    precision
+    name: nak.name, deity: nak.deity, quality: nak.quality,
+    group: nakshatraGroups[idx], pada, index: idx, precision
   };
 }
 
-// Backward compat alias
-function getNakshatraSimple(birthDate) {
-  return getNakshatraFull(birthDate);
-}
+function getNakshatraSimple(birthDate) { return getNakshatraFull(birthDate, null); }
 
-// === NUMEROLOGÍA (con Soul y Destiny) ===
+// === NUMEROLOGÍA ===
 const numKeywords = {
   1:'Liderazgo',2:'Cooperación',3:'Expresión',4:'Estabilidad',5:'Libertad',
   6:'Responsabilidad',7:'Sabiduría',8:'Poder',9:'Humanitarismo',
@@ -168,41 +169,30 @@ const numKeywords = {
 };
 
 function reduceToSingle(n) {
-  while (n > 9 && n !== 11 && n !== 22 && n !== 33) {
-    let s = 0;
-    for (const ch of String(n)) s += parseInt(ch);
-    n = s;
-  }
+  while (n>9&&n!==11&&n!==22&&n!==33) { let s=0; for(const ch of String(n)) s+=parseInt(ch); n=s; }
   return n;
 }
 
 function getLifePath(birthDate) {
-  const str = birthDate.toISOString().split('T')[0].replace(/-/g,'');
-  let sum = 0;
-  for (const ch of str) sum += parseInt(ch);
+  const str=birthDate.toISOString().split('T')[0].replace(/-/g,'');
+  let sum=0; for(const ch of str) sum+=parseInt(ch);
   return reduceToSingle(sum);
 }
 
-const letterValues = {
-  a:1,b:2,c:3,d:4,e:5,f:6,g:7,h:8,i:9,
-  j:1,k:2,l:3,m:4,n:5,o:6,p:7,q:8,r:9,
-  s:1,t:2,u:3,v:4,w:5,x:6,y:7,z:8
-};
+const letterValues = {a:1,b:2,c:3,d:4,e:5,f:6,g:7,h:8,i:9,j:1,k:2,l:3,m:4,n:5,o:6,p:7,q:8,r:9,s:1,t:2,u:3,v:4,w:5,x:6,y:7,z:8};
 const vowels = ['a','e','i','o','u'];
 
 function getSoulNumber(fullName) {
   if (!fullName) return null;
-  const name = fullName.toLowerCase().replace(/[^a-záéíóúñü]/g,'');
-  let sum = 0;
-  for (const ch of name) { if (vowels.includes(ch)) sum += letterValues[ch]||0; }
+  const name=fullName.toLowerCase().replace(/[^a-z]/g,'');
+  let sum=0; for(const ch of name) { if(vowels.includes(ch)) sum+=letterValues[ch]||0; }
   return reduceToSingle(sum);
 }
 
 function getDestinyNumber(fullName) {
   if (!fullName) return null;
-  const name = fullName.toLowerCase().replace(/[^a-záéíóúñü]/g,'');
-  let sum = 0;
-  for (const ch of name) { sum += letterValues[ch]||0; }
+  const name=fullName.toLowerCase().replace(/[^a-z]/g,'');
+  let sum=0; for(const ch of name) { sum+=letterValues[ch]||0; }
   return reduceToSingle(sum);
 }
 
