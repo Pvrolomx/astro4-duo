@@ -1,4 +1,4 @@
-// ======= APP.JS — Astro4 DUO =======
+// ======= APP.JS v2 — Astro4 DUO =======
 
 let lastResult = null;
 
@@ -13,36 +13,39 @@ function calculateCompatibility() {
     return;
   }
 
-  const result = calculateFullCompatibility(date1, date2);
-  lastResult = { ...result, name1, name2 };
+  // Micro-delay for anticipation
+  const btn = document.getElementById('btn-reveal');
+  btn.textContent = '✨ Calculando...';
+  btn.disabled = true;
 
-  // Switch screens
+  setTimeout(() => {
+    const result = calculateFullCompatibility(date1, date2);
+    lastResult = { ...result, name1, name2 };
+    showResult(result, name1, name2);
+    btn.textContent = '✨ Revelar compatibilidad';
+    btn.disabled = false;
+  }, 400);
+}
+
+function showResult(result, name1, name2) {
   document.getElementById('screen-input').style.display = 'none';
   document.getElementById('screen-result').style.display = 'block';
-
-  // Names
   document.getElementById('result-names').textContent = `${name1} 💕 ${name2}`;
 
-  // Animate score circle
+  // Score circle animation
   const pct = result.total;
   const ring = document.getElementById('score-ring-fill');
-  const circumference = 2 * Math.PI * 85; // ~534
+  const circumference = 2 * Math.PI * 85;
   const offset = circumference - (pct / 100) * circumference;
   
-  // Color based on score
   let color = '#ef4444';
   if (pct >= 80) color = '#ffd700';
   else if (pct >= 60) color = '#60a5fa';
   else if (pct >= 40) color = '#f59e0b';
   
   ring.style.stroke = color;
-  
-  // Animate after brief delay
-  setTimeout(() => {
-    ring.style.strokeDashoffset = offset;
-  }, 100);
+  setTimeout(() => { ring.style.strokeDashoffset = offset; }, 100);
 
-  // Animate number
   animateNumber('score-number', 0, pct, 1200);
   document.getElementById('score-label').textContent = result.label;
 
@@ -57,11 +60,16 @@ function calculateCompatibility() {
     }, 300 + i * 200);
   });
 
+  // Vedic disclaimer
+  if (result.vedicNote) {
+    const vedicDetail = document.getElementById('detail-vedic');
+    vedicDetail.textContent += ` ${result.vedicNote}`;
+  }
+
   // Insight
   document.getElementById('insight-card').style.display = 'block';
   document.getElementById('insight-text').textContent = result.insight;
 
-  // Scroll to top
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -71,9 +79,8 @@ function animateNumber(id, from, to, duration) {
   function step(now) {
     const elapsed = now - start;
     const progress = Math.min(elapsed / duration, 1);
-    const eased = 1 - Math.pow(1 - progress, 3); // ease-out cubic
-    const current = Math.round(from + (to - from) * eased);
-    el.textContent = `${current}%`;
+    const eased = 1 - Math.pow(1 - progress, 3);
+    el.textContent = `${Math.round(from + (to - from) * eased)}%`;
     if (progress < 1) requestAnimationFrame(step);
   }
   requestAnimationFrame(step);
@@ -82,13 +89,10 @@ function animateNumber(id, from, to, duration) {
 function resetForm() {
   document.getElementById('screen-result').style.display = 'none';
   document.getElementById('screen-input').style.display = 'block';
-  
-  // Reset animations
   document.getElementById('score-ring-fill').style.strokeDashoffset = '534';
   ['western','vedic','chinese','numerology'].forEach(t => {
     document.getElementById(`fill-${t}`).style.width = '0%';
   });
-
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -102,7 +106,7 @@ async function shareResult() {
     `🪷 Védico: ${lastResult.vedic.score}%\n` +
     `🐉 Chino: ${lastResult.chinese.score}%\n` +
     `🔢 Numerología: ${lastResult.numerology.score}%\n\n` +
-    `Descubre tu compatibilidad en: ${window.location.href}`;
+    `Descubre tu compatibilidad: ${window.location.origin}`;
 
   if (navigator.share) {
     try {
@@ -122,6 +126,15 @@ function fallbackCopy(text) {
     btn.textContent = '✅ Copiado al portapapeles';
     setTimeout(() => btn.textContent = orig, 2000);
   }).catch(() => {
-    alert('No se pudo copiar. Texto:\n\n' + text);
+    // Final fallback
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    const btn = document.querySelector('.action-buttons .btn-primary');
+    btn.textContent = '✅ Copiado';
+    setTimeout(() => btn.textContent = '📤 Compartir resultado', 2000);
   });
 }
