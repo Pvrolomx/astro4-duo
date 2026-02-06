@@ -17,69 +17,113 @@
 </head>
 <body>
   <div class="container">
+    <!-- Language Toggle -->
+    <div class="lang-toggle">
+      <button id="btn-lang" onclick="toggleLang()" title="Switch language">
+        <span id="lang-flag">🇺🇸</span> <span id="lang-label">EN</span>
+      </button>
+    </div>
+
     <div id="screen-input">
       <header>
-        <h1>✨ Astro4 DUO</h1>
-        <p class="tagline">Compatibilidad Cósmica — 4 tradiciones</p>
+        <div class="logo-wrapper">
+          <svg class="logo-icon" viewBox="0 0 80 40" width="80" height="40">
+            <!-- A4 connected by constellation line -->
+            <circle cx="15" cy="20" r="3" fill="#9d4edd" opacity="0.8"/>
+            <circle cx="65" cy="20" r="3" fill="#ffd700" opacity="0.8"/>
+            <line x1="18" y1="20" x2="62" y2="20" stroke="url(#logoGrad)" stroke-width="0.8" stroke-dasharray="3,3" opacity="0.6"/>
+            <circle cx="30" cy="15" r="1.5" fill="#fff" opacity="0.5"/>
+            <circle cx="50" cy="25" r="1.5" fill="#fff" opacity="0.5"/>
+            <line x1="15" y1="20" x2="30" y2="15" stroke="#9d4edd" stroke-width="0.5" opacity="0.4"/>
+            <line x1="30" y1="15" x2="50" y2="25" stroke="#fff" stroke-width="0.4" opacity="0.3"/>
+            <line x1="50" y1="25" x2="65" y2="20" stroke="#ffd700" stroke-width="0.5" opacity="0.4"/>
+            <defs>
+              <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#9d4edd"/>
+                <stop offset="100%" stop-color="#ffd700"/>
+              </linearGradient>
+            </defs>
+          </svg>
+          <h1>A4 <span class="duo-accent">DUO</span></h1>
+        </div>
+        <p class="tagline" data-i18n="tagline">Compatibilidad Cósmica — 4 tradiciones</p>
       </header>
 
       <div class="card">
-        <h2>¿Qué tan compatibles son?</h2>
+        <h2 data-i18n="question">¿Qué tan compatibles son?</h2>
         <div class="duo-columns">
           <div class="person-col">
-            <h3>👤 Persona 1</h3>
+            <h3>👤 <span data-i18n="person">Persona</span> 1</h3>
             <div class="form-group">
-              <label for="name1">Nombre</label>
-              <input type="text" id="name1" placeholder="Ej: María" autocomplete="off">
+              <label for="name1" data-i18n="name">Nombre</label>
+              <input type="text" id="name1" data-i18n-placeholder="namePh" placeholder="Ej: María" autocomplete="off">
             </div>
             <div class="form-group">
-              <label for="fullname1">Nombre completo <span class="optional">(opcional)</span></label>
-              <input type="text" id="fullname1" placeholder="Ej: María López García" autocomplete="off">
+              <label for="fullname1"><span data-i18n="fullname">Nombre completo</span> <span class="optional" data-i18n="optional">(opcional)</span></label>
+              <input type="text" id="fullname1" data-i18n-placeholder="fullnamePh" placeholder="Ej: María López García" autocomplete="off">
             </div>
             <div class="form-group">
-              <label for="date1">Fecha de nacimiento</label>
+              <label for="date1" data-i18n="birthdate">Fecha de nacimiento</label>
               <input type="date" id="date1">
             </div>
             <div class="form-group">
-              <label for="time1">Hora de nacimiento <span class="optional">(opcional)</span></label>
+              <label for="time1"><span data-i18n="birthtime">Hora de nacimiento</span> <span class="optional" data-i18n="optional">(opcional)</span></label>
               <input type="time" id="time1">
             </div>
           </div>
           <div class="divider-v">💕</div>
           <div class="person-col">
-            <h3>👤 Persona 2</h3>
+            <h3>👤 <span data-i18n="person">Persona</span> 2</h3>
             <div class="form-group">
-              <label for="name2">Nombre</label>
-              <input type="text" id="name2" placeholder="Ej: Carlos" autocomplete="off">
+              <label for="name2" data-i18n="name">Nombre</label>
+              <input type="text" id="name2" data-i18n-placeholder="namePh2" placeholder="Ej: Carlos" autocomplete="off">
             </div>
             <div class="form-group">
-              <label for="fullname2">Nombre completo <span class="optional">(opcional)</span></label>
-              <input type="text" id="fullname2" placeholder="Ej: Carlos Ruiz Pérez" autocomplete="off">
+              <label for="fullname2"><span data-i18n="fullname">Nombre completo</span> <span class="optional" data-i18n="optional">(opcional)</span></label>
+              <input type="text" id="fullname2" data-i18n-placeholder="fullnamePh2" placeholder="Ej: Carlos Ruiz Pérez" autocomplete="off">
             </div>
             <div class="form-group">
-              <label for="date2">Fecha de nacimiento</label>
+              <label for="date2" data-i18n="birthdate">Fecha de nacimiento</label>
               <input type="date" id="date2">
             </div>
             <div class="form-group">
-              <label for="time2">Hora de nacimiento <span class="optional">(opcional)</span></label>
+              <label for="time2"><span data-i18n="birthtime">Hora de nacimiento</span> <span class="optional" data-i18n="optional">(opcional)</span></label>
               <input type="time" id="time2">
             </div>
           </div>
         </div>
-        <p class="hint">💡 Nombre completo = numerología avanzada · Hora = nakshatra preciso</p>
+        <p class="hint" data-i18n="hint">💡 Nombre completo = numerología avanzada · Hora = nakshatra preciso</p>
         <button id="btn-reveal" class="btn-primary" onclick="calculateCompatibility()">
-          ✨ Revelar compatibilidad
+          <span data-i18n="reveal">✨ Revelar compatibilidad</span>
         </button>
       </div>
 
       <div class="footer-links">
-        <a href="https://astro4.duendes.app/" target="_blank">🔮 Ver mi perfil Astro4 completo</a>
+        <a href="https://astro4.duendes.app/" target="_blank" data-i18n="fullProfile">🔮 Ver mi perfil Astro4 completo</a>
       </div>
     </div>
 
     <div id="screen-result" style="display:none">
       <header>
-        <h1>✨ Astro4 DUO</h1>
+        <div class="logo-wrapper">
+          <svg class="logo-icon" viewBox="0 0 80 40" width="80" height="40">
+            <circle cx="15" cy="20" r="3" fill="#9d4edd" opacity="0.8"/>
+            <circle cx="65" cy="20" r="3" fill="#ffd700" opacity="0.8"/>
+            <line x1="18" y1="20" x2="62" y2="20" stroke="url(#logoGrad2)" stroke-width="0.8" stroke-dasharray="3,3" opacity="0.6"/>
+            <circle cx="30" cy="15" r="1.5" fill="#fff" opacity="0.5"/>
+            <circle cx="50" cy="25" r="1.5" fill="#fff" opacity="0.5"/>
+            <line x1="15" y1="20" x2="30" y2="15" stroke="#9d4edd" stroke-width="0.5" opacity="0.4"/>
+            <line x1="30" y1="15" x2="50" y2="25" stroke="#fff" stroke-width="0.4" opacity="0.3"/>
+            <line x1="50" y1="25" x2="65" y2="20" stroke="#ffd700" stroke-width="0.5" opacity="0.4"/>
+            <defs>
+              <linearGradient id="logoGrad2" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#9d4edd"/>
+                <stop offset="100%" stop-color="#ffd700"/>
+              </linearGradient>
+            </defs>
+          </svg>
+          <h1>A4 <span class="duo-accent">DUO</span></h1>
+        </div>
         <p class="tagline" id="result-names"></p>
       </header>
 
@@ -95,11 +139,11 @@
       </div>
 
       <div class="card breakdown-card">
-        <h2>Desglose por tradición</h2>
+        <h2 data-i18n="breakdown">Desglose por tradición</h2>
         <div class="tradition-bar">
           <div class="tradition-header">
             <span class="tradition-icon">☀️</span>
-            <span class="tradition-name">Occidental</span>
+            <span class="tradition-name" data-i18n="western">Occidental</span>
             <span class="tradition-pct" id="pct-western">0%</span>
           </div>
           <div class="bar-track"><div class="bar-fill" id="fill-western"></div></div>
@@ -108,7 +152,7 @@
         <div class="tradition-bar">
           <div class="tradition-header">
             <span class="tradition-icon">🪷</span>
-            <span class="tradition-name">Védico</span>
+            <span class="tradition-name" data-i18n="vedic">Védico</span>
             <span class="tradition-pct" id="pct-vedic">0%</span>
           </div>
           <div class="bar-track"><div class="bar-fill" id="fill-vedic"></div></div>
@@ -119,7 +163,7 @@
         <div class="tradition-bar">
           <div class="tradition-header">
             <span class="tradition-icon">🐉</span>
-            <span class="tradition-name">Chino</span>
+            <span class="tradition-name" data-i18n="chinese">Chino</span>
             <span class="tradition-pct" id="pct-chinese">0%</span>
           </div>
           <div class="bar-track"><div class="bar-fill" id="fill-chinese"></div></div>
@@ -128,7 +172,7 @@
         <div class="tradition-bar">
           <div class="tradition-header">
             <span class="tradition-icon">🔢</span>
-            <span class="tradition-name">Numerología</span>
+            <span class="tradition-name" data-i18n="numerology">Numerología</span>
             <span class="tradition-pct" id="pct-numerology">0%</span>
           </div>
           <div class="bar-track"><div class="bar-fill" id="fill-numerology"></div></div>
@@ -142,20 +186,21 @@
       </div>
 
       <div class="action-buttons">
-        <button class="btn-primary" onclick="shareResult()">📤 Compartir resultado</button>
-        <button class="btn-secondary" onclick="resetForm()">🔄 Probar otra pareja</button>
-        <a href="https://astro4.duendes.app/" target="_blank" class="btn-outline">🔮 Ver perfil completo en Astro4</a>
+        <button class="btn-primary" onclick="shareResult()"><span data-i18n="share">📤 Compartir resultado</span></button>
+        <button class="btn-secondary" onclick="resetForm()"><span data-i18n="tryAnother">🔄 Probar otra pareja</span></button>
+        <a href="https://astro4.duendes.app/" target="_blank" class="btn-outline" data-i18n="fullProfile">🔮 Ver perfil completo en Astro4</a>
       </div>
     </div>
 
     <footer>
       <p>Hecho por <a href="https://duendes.app" target="_blank">duendes.app</a> 2026</p>
-      <button id="btn-install" style="display:none" onclick="installApp()">📲 Instalar App</button>
+      <button id="btn-install" style="display:none" onclick="installApp()">📲 <span data-i18n="install">Instalar App</span></button>
     </footer>
   </div>
 
   <script src="/js/astro-calc.js"></script>
   <script src="/js/compatibility-calc.js"></script>
+  <script src="/js/i18n.js"></script>
   <script src="/js/app.js"></script>
   <script>
     if ('serviceWorker' in navigator) { navigator.serviceWorker.register('/sw.js'); }
