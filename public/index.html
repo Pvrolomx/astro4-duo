@@ -17,7 +17,6 @@
 </head>
 <body>
   <div class="container">
-    <!-- LANDING / INPUT -->
     <div id="screen-input">
       <header>
         <h1>✨ Astro4 DUO</h1>
@@ -41,6 +40,10 @@
               <label for="date1">Fecha de nacimiento</label>
               <input type="date" id="date1">
             </div>
+            <div class="form-group">
+              <label for="time1">Hora de nacimiento <span class="optional">(opcional)</span></label>
+              <input type="time" id="time1">
+            </div>
           </div>
           <div class="divider-v">💕</div>
           <div class="person-col">
@@ -57,9 +60,13 @@
               <label for="date2">Fecha de nacimiento</label>
               <input type="date" id="date2">
             </div>
+            <div class="form-group">
+              <label for="time2">Hora de nacimiento <span class="optional">(opcional)</span></label>
+              <input type="time" id="time2">
+            </div>
           </div>
         </div>
-        <p class="hint">💡 El nombre completo activa numerología avanzada (Alma + Destino)</p>
+        <p class="hint">💡 Nombre completo = numerología avanzada · Hora = nakshatra preciso</p>
         <button id="btn-reveal" class="btn-primary" onclick="calculateCompatibility()">
           ✨ Revelar compatibilidad
         </button>
@@ -70,7 +77,6 @@
       </div>
     </div>
 
-    <!-- RESULTADO -->
     <div id="screen-result" style="display:none">
       <header>
         <h1>✨ Astro4 DUO</h1>
@@ -90,7 +96,7 @@
 
       <div class="card breakdown-card">
         <h2>Desglose por tradición</h2>
-        <div class="tradition-bar" id="bar-western">
+        <div class="tradition-bar">
           <div class="tradition-header">
             <span class="tradition-icon">☀️</span>
             <span class="tradition-name">Occidental</span>
@@ -99,7 +105,7 @@
           <div class="bar-track"><div class="bar-fill" id="fill-western"></div></div>
           <p class="tradition-detail" id="detail-western"></p>
         </div>
-        <div class="tradition-bar" id="bar-vedic">
+        <div class="tradition-bar">
           <div class="tradition-header">
             <span class="tradition-icon">🪷</span>
             <span class="tradition-name">Védico</span>
@@ -108,8 +114,9 @@
           <div class="bar-track"><div class="bar-fill" id="fill-vedic"></div></div>
           <p class="tradition-detail" id="detail-vedic"></p>
           <p class="tradition-extra" id="extra-vedic"></p>
+          <p class="precision-badge" id="precision-vedic"></p>
         </div>
-        <div class="tradition-bar" id="bar-chinese">
+        <div class="tradition-bar">
           <div class="tradition-header">
             <span class="tradition-icon">🐉</span>
             <span class="tradition-name">Chino</span>
@@ -118,7 +125,7 @@
           <div class="bar-track"><div class="bar-fill" id="fill-chinese"></div></div>
           <p class="tradition-detail" id="detail-chinese"></p>
         </div>
-        <div class="tradition-bar" id="bar-numerology">
+        <div class="tradition-bar">
           <div class="tradition-header">
             <span class="tradition-icon">🔢</span>
             <span class="tradition-name">Numerología</span>
