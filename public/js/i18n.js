@@ -28,7 +28,9 @@ const translations = {
     install: 'Instalar App',
     alertFill: 'Por favor completa nombre y fecha de nacimiento',
     alertError: 'Error al calcular. Intenta de nuevo.',
-    copied: '✅ Copiado al portapapeles'
+    copied: '✅ Copiado al portapapeles',
+    kofiText: '☕ ¿Te gustó tu lectura cósmica? Apoya este proyecto',
+    kofiBtn: '☕ Invítame un café'
   },
   en: {
     tagline: 'Cosmic Compatibility — 4 traditions',
@@ -57,7 +59,9 @@ const translations = {
     install: 'Install App',
     alertFill: 'Please fill in name and date of birth',
     alertError: 'Error calculating. Try again.',
-    copied: '✅ Copied to clipboard'
+    copied: '✅ Copied to clipboard',
+    kofiText: '☕ Enjoyed your cosmic reading? Support this project',
+    kofiBtn: '☕ Buy me a coffee'
   }
 };
 
