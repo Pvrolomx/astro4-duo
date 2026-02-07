@@ -351,6 +351,40 @@ footer a { color: var(--accent); text-decoration: none; }
   filter: drop-shadow(0 0 15px rgba(157,78,221,0.4)) drop-shadow(0 0 15px rgba(255,215,0,0.3));
 }
 
+
+/* Ko-fi CTA */
+.kofi-card {
+  text-align: center;
+  padding: 20px;
+  margin-bottom: 16px;
+  background: rgba(26,26,46,0.6);
+  border-radius: 16px;
+  border: 1px solid rgba(255,215,0,0.15);
+}
+
+.kofi-text {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin-bottom: 12px;
+}
+
+.kofi-btn {
+  display: inline-block;
+  padding: 10px 24px;
+  background: linear-gradient(135deg, #ff5e5b, #ff9966);
+  color: white;
+  text-decoration: none;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.kofi-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255,94,91,0.3);
+}
+
 /* Responsive */
 @media (max-width: 400px) {
   .duo-columns { flex-direction: column; }
